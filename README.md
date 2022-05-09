@@ -18,3 +18,8 @@ export CHART_VERSION=$(helm search repo -o json | jq -r .[0].version)
 helm show values gitlab/gitlab --version ${CHART_VERSION} > values.${CHART_VERSION}.yaml
 ```
 and edited afterwards
+
+The initial root password can be obtained using
+```
+kubectl get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}'|base64 -d;echo
+```
