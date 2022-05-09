@@ -113,6 +113,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-redis-settings
   redis:
+    enabled: false
     password:
       enabled: true
       # secret:
@@ -291,28 +292,28 @@ global:
         # secret:
         # key:
     lfs:
-      enabled: true
+      enabled: false
       proxy_download: true
       bucket: git-lfs
       connection: {}
         # secret:
         # key:
     artifacts:
-      enabled: true
+      enabled: false
       proxy_download: true
       bucket: gitlab-artifacts
       connection: {}
         # secret:
         # key:
     uploads:
-      enabled: true
+      enabled: false
       proxy_download: true
       bucket: gitlab-uploads
       connection: {}
         # secret:
         # key:
     packages:
-      enabled: true
+      enabled: false
       proxy_download: true
       bucket: gitlab-packages
       connection: {}
@@ -736,61 +737,7 @@ certmanager:
 ## https://docs.gitlab.com/charts/architecture/decisions#nginx-ingress
 ## Installation & configuration of charts/ingress-nginx:
 nginx-ingress:
-  enabled: true
-  tcpExternalConfig: "true"
-  controller:
-    addHeaders:
-      Referrer-Policy: strict-origin-when-cross-origin
-    config:
-      hsts: "true"
-      hsts-include-subdomains: "false"
-      hsts-max-age: "63072000"
-      server-name-hash-bucket-size: "256"
-      use-http2: "true"
-      ssl-ciphers: "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4"
-      ssl-protocols: "TLSv1.3 TLSv1.2"
-      server-tokens: "false"
-    service:
-      externalTrafficPolicy: "Local"
-    ingressClassByName: false
-    ingressClassResource:
-      name: '{{ include "ingress.class.name" $ }}'
-    resources:
-      requests:
-        cpu: 100m
-        memory: 100Mi
-    publishService:
-      enabled: true
-    replicaCount: 2
-    minAvailable: 1
-    scope:
-      enabled: true
-    metrics:
-      enabled: true
-      service:
-        annotations:
-          gitlab.com/prometheus_scrape: "true"
-          gitlab.com/prometheus_port: "10254"
-          prometheus.io/scrape: "true"
-          prometheus.io/port: "10254"
-    admissionWebhooks:
-      enabled: false
-  defaultBackend:
-    enabled: true
-    minAvailable: 1
-    replicaCount: 1
-    resources:
-      requests:
-        cpu: 5m
-        memory: 5Mi
-  rbac:
-    create: true
-    # Needed for k8s 1.20 and 1.21
-    # https://github.com/kubernetes/ingress-nginx/issues/7510
-    # https://github.com/kubernetes/ingress-nginx/issues/7519
-    scope: false
-  serviceAccount:
-    create: true
+  enabled: false
 
 ## Installation & configuration of stable/prometheus
 ## See requirements.yaml for current version
@@ -973,45 +920,14 @@ postgresql:
 ## Installation & configuration charts/registry
 ## https://docs.gitlab.com/charts/architecture/decisions#registry
 ## https://docs.gitlab.com/charts/charts/registry/
-# registry:
-#   enabled: false
+registry:
+  enabled: false
 
 ## Automatic shared secret generation
 ## https://docs.gitlab.com/charts/installation/secrets
 ## https://docs.gitlab.com/charts/charts/shared-secrets.html
 shared-secrets:
-  enabled: true
-  rbac:
-    create: true
-  selfsign:
-    image:
-      # pullPolicy: IfNotPresent
-      # pullSecrets: []
-      repository: registry.gitlab.com/gitlab-org/build/cng/cfssl-self-sign
-      # The digest below comes from a given tag pipeline because they are mirrored to .com,
-      # ensuring that the image tag is available from both instances. The digest can be
-      # found in the 'sync_images' job.
-      #   https://dev.gitlab.org/gitlab/charts/components/images/-/tags
-      tag: 1.6.1@sha256:e89392e13b4ef12cd48ba8c30326aacd89a8d0161cb081ac8dfbb77200d5ebac
-    keyAlgorithm: "rsa"
-    keySize: "4096"
-    expiry: "3650d"
-    caSubject: "GitLab Helm Chart"
-  env: production
-  serviceAccount:
-    enabled: true
-    create: true
-    name: # Specify a pre-existing ServiceAccount name
-  resources:
-    requests:
-      cpu: 50m
-  securityContext:
-    # in debian/alpine based images, this is `nobody:nogroup`
-    runAsUser: 65534
-    fsGroup: 65534
-  tolerations: []
-  podLabels: {}
-  annotations: {}
+  enabled: false
 
 ## Installation & configuration of gitlab/gitlab-runner
 ## See requirements.yaml for current version
@@ -1093,7 +1009,7 @@ grafana:
 gitlab:
   ## https://docs.gitlab.com/charts/charts/gitlab/toolbox
   toolbox:
-    replicas: 1
+    replicas: 0
     antiAffinityLabels:
       matchLabels:
         app: gitaly
