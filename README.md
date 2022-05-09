@@ -5,6 +5,10 @@ More info can be found in the [Gitlab documentation](https://docs.gitlab.com/cha
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
 export CHART_VERSION=$(helm search repo -r 'gitlab.*Git-repository' -o json | jq -r .[0].version)
+helm upgrade -i gitlab gitlab/gitlab \
+  --version ${CHART_VERSION} \
+  --timeout 600s \
+  -f values.yaml
 ```
 
 ## Additional info
